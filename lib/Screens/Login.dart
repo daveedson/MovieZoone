@@ -10,7 +10,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  
   //created a Unqiuely identifiable key for form validation..
   final _formKey = GlobalKey<FormState>();
 
@@ -64,43 +63,46 @@ class _LoginScreenState extends State<LoginScreen> {
                             return "Email must have nothing less than 5characters ";
                           }
                         },
+                        cursorColor: Colors.white12,
                         decoration: InputDecoration(
                             hintText: 'Email',
-                            helperText:
-                                "This has to have a valid email address with '@' ",
-                            helperStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 15.0, horizontal: 20.0),
                             filled: true,
-                            fillColor: Theme.of(context).primaryColor,
+                            fillColor: Color(0xff498DFE33),
                             suffixIcon: Icon(
                               Icons.person,
                               size: 20.0,
                               color: Colors.white,
                             ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                  color: Colors.redAccent, width: 1.0),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                  color: Colors.redAccent, width: 1.0),
+                            ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide(
                                   style: BorderStyle.solid,
-                                  color: Theme.of(context).primaryColor,
+                                  color: Colors.white,
                                   width: 1.0),
                             ),
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor))),
+                                borderSide: BorderSide(color: Colors.white))),
                       ),
                     ),
-
-
-
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
                         obscureText: true,
+                        cursorColor: Colors.white12,
                         validator: (value) {
                           if (value.isEmpty) {
                             return "You can't have and empty password !";
@@ -111,62 +113,56 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         decoration: InputDecoration(
                             hintText: 'Password',
-                            helperText:
-                                "Password should not be less than six characters ",
-                            helperStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 15.0, horizontal: 20.0),
                             filled: true,
-                            fillColor: Theme.of(context).primaryColor,
+                            fillColor: Color(0xff498DFE33),
                             suffixIcon: Icon(
                               Icons.lock,
                               size: 20.0,
                               color: Colors.white,
                             ),
-                            enabledBorder: OutlineInputBorder(
+                            focusedErrorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 1.0),
+                                  color: Colors.redAccent, width: 1.0),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                  color: Colors.redAccent, width: 1.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1.0),
                             ),
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor))),
+                                borderSide: BorderSide(color: Colors.white))),
                       ),
                     ),
-
                     SizedBox(
-                      height: 15.0,
+                      height: 8.0,
                     ),
-
-                    GestureDetector(
-                      onTap: () {
+                    Text('Create a new account'),
+                    SizedBox(height: 20.0),
+                    FlatButton(
+                      child: Text('LOGIN'),
+                      color: Color(0xff576F93),
+                      padding: EdgeInsets.symmetric(horizontal: 60.0, vertical: 15.0),
+                      shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(25.0),
+                            ),
+                      ),
+                      onPressed: (){
                         if (_formKey.currentState.validate()) {
                           Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (_) => HomeScreen()));
                         }
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 60.0),
-                        height: 45.0,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(25.0)),
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22.0,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                      }
+                    )
+                   ],
                 ),
               )
             ],
