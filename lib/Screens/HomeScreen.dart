@@ -18,17 +18,46 @@ class _HomeScreenState extends State<HomeScreen> {
     _pageController = new PageController(initialPage: 0, viewportFraction: 0.8);
   }
 
+  //this method builds the Bottom Sheet
   Widget BottomSheetBuild(BuildContext context) {
     return Container(
       color: Color(0xFF141414),
       child: Container(
         height: 200.0,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0),
-          topRight: Radius.circular(30.0),
-        )),
+          color: Colors.black54,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            _bottomSheetContent(Icon(Icons.exit_to_app), 'Logout', () {}),
+            _bottomSheetContent(
+              Icon(Icons.timelapse),
+               'Recommended',
+                (){}
+                )
+          ],
+        ),
       ),
+    );
+  }
+
+  //this method builds the listTile for the Bottom sheet
+  _bottomSheetContent(Icon icon, String name, Function onTap) {
+    return ListTile(
+      leading: icon,
+      title: Text(
+        name,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 25.0,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      onTap: onTap,
     );
   }
 
@@ -44,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 data:
                     Theme.of(context).copyWith(accentColor: Color(0xffD29393)),
                 child: TextField(
+                  autofocus: false,
                   enabled: true,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(15.0),
