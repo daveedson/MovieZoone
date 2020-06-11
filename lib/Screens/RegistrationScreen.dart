@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moviezoone/Screens/HomeScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:moviezoone/Components/custom_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegistrationScreen extends StatefulWidget {
   RegistrationScreen({Key key}) : super(key: key);
@@ -9,6 +12,12 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
+  final _store = Firestore.instance;
+  String email;
+  String password;
+  String username;
+
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -51,11 +60,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
+                        validator: (email) {
+                          if (email.isEmpty) {
                             return "You can't have an empty email !,";
                           }
-                          if (value.length < 5) {
+                          if (email.length < 5) {
                             return "Email must have nothing less than 5characters ";
                           }
                         },
@@ -98,11 +107,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
                         cursorColor: Colors.white12,
-                        validator: (value) {
-                          if (value.isEmpty) {
+                        validator: (username) {
+                          if (username.isEmpty) {
                             return "You can't have an empty username !";
                           }
-                          if (value.length < 3) {
+                          if (username.length < 3) {
                             return "you can't have a username with  less than 3words";
                           }
                         },
@@ -118,10 +127,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               color: Colors.white,
                             ),
                             focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 1.0),
-                            ),
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 1.0)),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide(
@@ -143,11 +151,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       child: TextFormField(
                         obscureText: true,
                         cursorColor: Colors.white12,
-                        validator: (value) {
-                          if (value.isEmpty) {
+                        validator: (password) {
+                          if (password.isEmpty) {
                             return "You can't have and empty password !";
                           }
-                          if (value.length < 6) {
+                          if (password.length < 6) {
                             return "Password can't be less than 6";
                           }
                         },
@@ -191,47 +199,32 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
             ),
             Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState.validate()) {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) => HomeScreen()));
-                  }
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Theme.of(context).primaryColor,
-                  height: 60.0,
-                  child: Text(
-                    "REGISTER",
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-              ),
-            ),
+                alignment: FractionalOffset.bottomCenter,
+                child: CustomButton(
+                    label: 'REGISTER',
+                    buttonFunction: () async {
+                      if (_formKey.currentState.validate()) {
+                        try {
+                          final newUser =
+                              await _auth.createUserWithEmailAndPassword(
+                                  email: email, password: password);
+                          if (newUser != null) {
+                            _store
+                          .collection('users')
+                          .add({'email': email, 'username': username});
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => HomeScreen()));
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
+                      }
+                    }))
           ],
         ),
       ),
     );
   }
 }
-
-//  FlatButton(
-//                         child: Text('REGISTER'),
-//                         color: Color(0xff576F93),
-//                         padding: EdgeInsets.symmetric(
-//                             horizontal: 60.0, vertical: 15.0),
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.all(
-//                             Radius.circular(25.0),
-//                           ),
-//                         ),
-//                         onPressed: () {
-//                           if (_formKey.currentState.validate()) {
-//                             Navigator.pushReplacement(
-//                                 context,
-//                                 MaterialPageRoute(
-//                                     builder: (_) => HomeScreen()));
-//                           }
-//                         })
