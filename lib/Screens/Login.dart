@@ -21,6 +21,15 @@ class LoginScreen extends StatelessWidget {
     }
   }
 
+  //method log in to facebook
+  Future<void> _signInWithFacebook() async {
+    try {
+      await authFunctions.loginInWithFacebook();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   //created a Uniquely identifiable key for form validation..
   final _formKey = GlobalKey<FormState>();
   @override
@@ -179,7 +188,7 @@ class LoginScreen extends StatelessWidget {
                           darkMode: true,
                         ),
                         FacebookSignInButton(
-                          onPressed: () {},
+                          onPressed: _signInWithFacebook,
                         )
                       ],
                     ),

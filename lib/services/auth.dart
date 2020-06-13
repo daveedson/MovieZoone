@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:moviezoone/services/authFunctions.dart';
 
@@ -73,8 +74,24 @@ class Auth implements AuthFunctions {
 
   //this method signs in with Facebook..
   @override
-  Future<User> loginInWithFacebook() {
-    throw UnimplementedError();
+  Future<User> loginInWithFacebook() async {
+    FacebookLogin facebookLogin = FacebookLogin();
+    final facebookLoginResult = await facebookLogin.logIn(
+      ['public_profile'],
+    );
+    if (facebookLoginResult.accessToken != null) {
+      final authResult = await _firebaseAuth.signInWithCredential(
+        FacebookAuthProvider.getCredential(
+          accessToken: facebookLoginResult.accessToken.token,
+        ),
+      );
+      return _userFromFirebase(authResult.user);
+    } else {
+      throw PlatformException(
+        code: 'Error_Missing_by_User',
+        message: 'Sign in Aborted by User',
+      );
+    }
   }
 
   //this method creates a stream of users..
@@ -88,5 +105,8 @@ class Auth implements AuthFunctions {
   Future<void> signOut() async {
     GoogleSignIn googleSignIn = new GoogleSignIn();
     await googleSignIn.signOut();
+
+    FacebookLogin facebookLogin = new FacebookLogin();
+    await facebookLogin.logOut();
   }
 }

@@ -53,8 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: <Widget>[
             _bottomSheetContent(Icon(Icons.exit_to_app), 'Logout', () {
-              Navigator.pop(context);
               _signOutUser();
+              Navigator.pop(context);
             }),
             _bottomSheetContent(Icon(Icons.timelapse), 'Recommended', () {})
           ],
