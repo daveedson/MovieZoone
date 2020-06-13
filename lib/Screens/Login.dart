@@ -1,17 +1,27 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:moviezoone/Screens/RegistrationScreen.dart';
+import 'package:moviezoone/services/authFunctions.dart';
 
 import 'HomeScreen.dart';
 
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
+class LoginScreen extends StatelessWidget {
+  LoginScreen({@required this.authFunctions});
+  final AuthFunctions authFunctions;
 
-class _LoginScreenState extends State<LoginScreen> {
-  //created a Unqiuely identifiable key for form validation..
+  //method to sign in with Google..
+  Future<void> _signInWithGoogle() async {
+    try {
+      await authFunctions.logInWithGoogle();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  //created a Uniquely identifiable key for form validation..
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -54,12 +64,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
+                        validator: (email) {
+                          if (email.isEmpty) {
                             return "You can't have an empty email !,";
                           }
-                          if (value.length < 5) {
+                          if (email.length < 5) {
                             return "Email must have nothing less than 5characters ";
+                          } else {
+                            return null;
                           }
                         },
                         cursorColor: Colors.white12,
@@ -102,12 +114,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextFormField(
                         obscureText: true,
                         cursorColor: Colors.white12,
-                        validator: (value) {
-                          if (value.isEmpty) {
+                        validator: (password) {
+                          if (password.isEmpty) {
                             return "You can't have and empty password !";
                           }
-                          if (value.length < 6) {
+                          if (password.length < 6) {
                             return "Password can't be less than 6";
+                          } else {
+                            return null;
                           }
                         },
                         decoration: InputDecoration(
@@ -154,6 +168,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: Text('Create a new account'),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Column(
+                      children: <Widget>[
+                        GoogleSignInButton(
+                          onPressed: _signInWithGoogle,
+                          darkMode: true,
+                        ),
+                        FacebookSignInButton(
+                          onPressed: () {},
+                        )
+                      ],
                     ),
                   ],
                 ),

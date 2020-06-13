@@ -1,25 +1,44 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moviezoone/data/data.dart';
+import 'package:moviezoone/services/authFunctions.dart';
 import 'package:moviezoone/widgets/trendingMoviesScroll.dart';
 
 class HomeScreen extends StatefulWidget {
+  HomeScreen({@required this.authFunctions});
+  final AuthFunctions authFunctions;
   @override
   _HomeScreenState createState() => _HomeScreenState();
+  //method to logOut User
+
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //decalaring of pageController Scroll
+  //declaring of pageController Scroll
   PageController _pageController;
+
+  final _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     super.initState();
-    //initializing of the page controller class inside the initstate so it can build as the app is been run,
+    //initializing of the page controller class inside the initState so it can build as the app is been run,
     _pageController = new PageController(initialPage: 0, viewportFraction: 0.8);
   }
 
+  //method to logOut User
+  Future<void> _signOutUser() {
+    try {
+      _auth.signOut();
+    } catch (e) {
+      print('Something went wrong :$e');
+    }
+    return null;
+  }
+
   //this method builds the Bottom Sheet
-  Widget BottomSheetBuild(BuildContext context) {
+  Widget bottomSheetBuild(BuildContext context) {
     return Container(
       color: Color(0xFF141414),
       child: Container(
@@ -27,18 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: Colors.black54,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
+            topLeft: Radius.circular(40.0),
+            //   topRight: Radius.circular(30.0),
           ),
         ),
         child: Column(
           children: <Widget>[
-            _bottomSheetContent(Icon(Icons.exit_to_app), 'Logout', () {}),
-            _bottomSheetContent(
-              Icon(Icons.timelapse),
-               'Recommended',
-                (){}
-                )
+            _bottomSheetContent(Icon(Icons.exit_to_app), 'Logout', () {
+              Navigator.pop(context);
+              _signOutUser();
+            }),
+            _bottomSheetContent(Icon(Icons.timelapse), 'Recommended', () {})
           ],
         ),
       ),
@@ -53,8 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
         name,
         style: TextStyle(
           color: Colors.white,
-          fontSize: 25.0,
-          fontWeight: FontWeight.w500,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w400,
         ),
       ),
       onTap: onTap,
@@ -124,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: Icon(Icons.menu),
                         onPressed: () {
                           showModalBottomSheet(
-                              context: context, builder: BottomSheetBuild);
+                              context: context, builder: bottomSheetBuild);
                         },
                       )
                     ],

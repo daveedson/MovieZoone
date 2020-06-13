@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:moviezoone/Screens/HomeScreen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:moviezoone/Components/custom_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:moviezoone/Components/custom_button.dart';
+
+import 'HomeScreen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   RegistrationScreen({Key key}) : super(key: key);
@@ -67,6 +68,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           if (email.length < 5) {
                             return "Email must have nothing less than 5characters ";
                           }
+                          return null;
                         },
                         cursorColor: Colors.white12,
                         decoration: InputDecoration(
@@ -114,6 +116,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           if (username.length < 3) {
                             return "you can't have a username with  less than 3words";
                           }
+                          return null;
                         },
                         decoration: InputDecoration(
                             hintText: 'Username',
@@ -158,6 +161,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           if (password.length < 6) {
                             return "Password can't be less than 6";
                           }
+                          return null;
                         },
                         decoration: InputDecoration(
                             hintText: 'Password',
@@ -210,8 +214,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   email: email, password: password);
                           if (newUser != null) {
                             _store
-                          .collection('users')
-                          .add({'email': email, 'username': username});
+                                .collection('users')
+                                .add({'email': email, 'username': username});
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
