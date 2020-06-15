@@ -12,6 +12,12 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({@required this.authFunctions});
   final AuthFunctions authFunctions;
 
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  String get _email => _emailController.text.toString();
+  String get _password => _passwordController.text.toString();
+
   //method to sign in with Google..
   Future<void> _signInWithGoogle() async {
     try {
@@ -25,6 +31,18 @@ class LoginScreen extends StatelessWidget {
   Future<void> _signInWithFacebook() async {
     try {
       await authFunctions.loginInWithFacebook();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _signInWithEmailAndPassword(BuildContext context) async {
+    try {
+      await authFunctions.signInWithEmailAndPassword(_email, _password);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomeScreen(authFunctions: authFunctions)));
     } catch (e) {
       print(e.toString());
     }
@@ -73,6 +91,7 @@ class LoginScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
+                        controller: _emailController,
                         validator: (email) {
                           if (email.isEmpty) {
                             return "You can't have an empty email !,";
@@ -121,6 +140,7 @@ class LoginScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         cursorColor: Colors.white12,
                         validator: (password) {
@@ -205,13 +225,16 @@ class LoginScreen extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => HomeScreen()));
                   }
                 },
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Theme.of(context).primaryColor,
-                  height: 60.0,
-                  child: Text(
-                    "LOGIN",
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                child: GestureDetector(
+                  onTap: () => _signInWithEmailAndPassword(context),
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: Theme.of(context).primaryColor,
+                    height: 60.0,
+                    child: Text(
+                      "LOGIN",
+                      style: TextStyle(color: Colors.white, fontSize: 18.0),
+                    ),
                   ),
                 ),
               ),

@@ -6,4 +6,5 @@ abstract class AuthFunctions {
   Future<User> loginInWithFacebook();
   Future<void> signOut();
   Stream<User> get onAuthChanged;
+  Future<User> signInWithEmailAndPassword(String email, password);
 }

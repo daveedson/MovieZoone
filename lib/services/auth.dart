@@ -100,6 +100,14 @@ class Auth implements AuthFunctions {
     return _firebaseAuth.onAuthStateChanged.map(_userFromFirebase);
   }
 
+  //this method signs in user with email and password
+  @override
+  Future<User> signInWithEmailAndPassword(String email, password) async {
+    final authResult = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
+    return _userFromFirebase(authResult.user);
+  }
+
   //this method signs Out the user from the application.
   @override
   Future<void> signOut() async {
