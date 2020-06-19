@@ -5,51 +5,72 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:moviezoone/Screens/RegistrationScreen.dart';
 import 'package:moviezoone/services/authFunctions.dart';
+import 'package:moviezoone/widgets/PlatformAlertDialogs.dart';
 
 import 'HomeScreen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen({@required this.authFunctions});
   final AuthFunctions authFunctions;
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   String get _email => _emailController.text.toString();
+
   String get _password => _passwordController.text.toString();
 
-  //method to sign in with Google..
+
+  //this method signs in with Google
   Future<void> _signInWithGoogle() async {
     try {
-      await authFunctions.logInWithGoogle();
+      await widget.authFunctions.logInWithGoogle();
     } catch (e) {
       print(e.toString());
     }
   }
 
-  //method log in to facebook
+  //this method signs in with facebook
   Future<void> _signInWithFacebook() async {
     try {
-      await authFunctions.loginInWithFacebook();
+      await widget.authFunctions.loginInWithFacebook();
     } catch (e) {
       print(e.toString());
     }
   }
 
-  void _signInWithEmailAndPassword(BuildContext context) async {
+  //this method signs in with email and password
+  void _signInWithEmailAndPassword() async {
     try {
-      await authFunctions.signInWithEmailAndPassword(_email, _password);
+      await widget.authFunctions.signInWithEmailAndPassword(_email, _password);
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => HomeScreen(authFunctions: authFunctions)));
+              builder: (context) =>
+                  HomeScreen(authFunctions: widget.authFunctions)));
     } catch (e) {
       print(e.toString());
+      showDialog(
+          context: context,
+          builder: (context) {
+            return PlatFormAlertDialogs(
+              title: 'Sign In Failed',
+              content: e.toString(),
+              textAction: 'OK',
+              onPressed: () => Navigator.pop(context),
+            );
+          });
     }
   }
 
-  //created a Uniquely identifiable key for form validation..
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,6 +112,7 @@ class LoginScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
+                        keyboardType: TextInputType.emailAddress,
                         controller: _emailController,
                         validator: (email) {
                           if (email.isEmpty) {
@@ -140,6 +162,7 @@ class LoginScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
                       child: TextFormField(
+                        autocorrect: false,
                         controller: _passwordController,
                         obscureText: true,
                         cursorColor: Colors.white12,
@@ -221,20 +244,16 @@ class LoginScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   if (_formKey.currentState.validate()) {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) => HomeScreen()));
+                    _signInWithEmailAndPassword();
                   }
                 },
-                child: GestureDetector(
-                  onTap: () => _signInWithEmailAndPassword(context),
-                  child: Container(
-                    alignment: Alignment.center,
-                    color: Theme.of(context).primaryColor,
-                    height: 60.0,
-                    child: Text(
-                      "LOGIN",
-                      style: TextStyle(color: Colors.white, fontSize: 18.0),
-                    ),
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Theme.of(context).primaryColor,
+                  height: 60.0,
+                  child: Text(
+                    "LOGIN",
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
                   ),
                 ),
               ),
@@ -262,3 +281,33 @@ class LoginScreen extends StatelessWidget {
 //     }
 //   }
 // )
+
+//This block of code displays an alert dialog to the user when login isn't passed
+//      if (Platform.isAndroid) {
+//        showDialog(
+//          context: context,
+//          builder: (context) {
+//            return AlertDialog(
+//              title: Text('Login Failed'),
+//              content: Text(e.toString()),
+//              actions: <Widget>[
+//                FlatButton(
+//                  child: Text('Ok'),
+//                  onPressed: () => Navigator.pop(context),
+//                )
+//              ],
+//            );
+//          },
+//        );
+//      } else if (Platform.isIOS) {
+//        CupertinoAlertDialog(
+//          title: Text('Login Failed'),
+//          content: Text(e.toString()),
+//          actions: <Widget>[
+//            CupertinoDialogAction(
+//              child: Text('Ok'),
+//              onPressed: () => Navigator.pop(context),
+//            )
+//          ],
+//        );
+//      }
