@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:moviezoone/Screens/RegistrationScreen.dart';
 import 'package:moviezoone/services/authFunctions.dart';
@@ -51,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await authFunctions.signInWithEmailAndPassword(_email, _password);
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    } catch (e) {
+    } on PlatformException catch (e) {
       print(e.toString());
       showDialog(
           barrierDismissible: false,
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (context) {
             return PlatFormAlertDialogs(
               title: 'Sign In Failed',
-              content: e.toString(),
+              content: e.message,
               textAction: 'OK',
               onPressed: () => Navigator.pop(context),
             );
