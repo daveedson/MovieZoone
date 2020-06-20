@@ -3,12 +3,13 @@ import 'package:moviezoone/Screens/HomeScreen.dart';
 import 'package:moviezoone/Screens/Login.dart';
 import 'package:moviezoone/services/auth.dart';
 import 'package:moviezoone/services/authFunctions.dart';
+import 'package:provider/provider.dart';
 
 class LandingPage extends StatelessWidget {
-  LandingPage({@required this.authFunctions});
-  final AuthFunctions authFunctions;
   @override
   Widget build(BuildContext context) {
+    final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
+
     return StreamBuilder<User>(
         stream: authFunctions.onAuthChanged,
         builder: (context, snapshot) {
@@ -16,13 +17,9 @@ class LandingPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active) {
             User user = snapshot.data;
             if (user == null) {
-              return LoginScreen(
-                authFunctions: authFunctions,
-              );
+              return LoginScreen();
             } else {
-              return HomeScreen(
-                authFunctions: authFunctions,
-              );
+              return HomeScreen();
             }
           } else {
             return Scaffold(

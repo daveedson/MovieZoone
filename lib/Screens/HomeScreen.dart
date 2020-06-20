@@ -2,12 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moviezoone/data/data.dart';
-import 'package:moviezoone/services/authFunctions.dart';
 import 'package:moviezoone/widgets/trendingMoviesScroll.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({@required this.authFunctions});
-  final AuthFunctions authFunctions;
   @override
   _HomeScreenState createState() => _HomeScreenState();
   //method to logOut User
@@ -29,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //method to logOut User
   Future<void> _signOutUser() {
+    // final authFunctions = Provider.of<AuthFunctions>(context);
     try {
       _auth.signOut();
     } catch (e) {

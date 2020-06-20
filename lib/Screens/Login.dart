@@ -6,19 +6,16 @@ import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:moviezoone/Screens/RegistrationScreen.dart';
 import 'package:moviezoone/services/authFunctions.dart';
 import 'package:moviezoone/widgets/PlatformAlertDialogs.dart';
+import 'package:provider/provider.dart';
 
 import 'HomeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({@required this.authFunctions});
-  final AuthFunctions authFunctions;
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -26,11 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String get _password => _passwordController.text.toString();
 
-
   //this method signs in with Google
   Future<void> _signInWithGoogle() async {
+    final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
+
     try {
-      await widget.authFunctions.logInWithGoogle();
+      await authFunctions.logInWithGoogle();
     } catch (e) {
       print(e.toString());
     }
@@ -38,8 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //this method signs in with facebook
   Future<void> _signInWithFacebook() async {
+    final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
     try {
-      await widget.authFunctions.loginInWithFacebook();
+      await authFunctions.loginInWithFacebook();
     } catch (e) {
       print(e.toString());
     }
@@ -47,16 +46,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //this method signs in with email and password
   void _signInWithEmailAndPassword() async {
+    final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
     try {
-      await widget.authFunctions.signInWithEmailAndPassword(_email, _password);
+      await authFunctions.signInWithEmailAndPassword(_email, _password);
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  HomeScreen(authFunctions: widget.authFunctions)));
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } catch (e) {
       print(e.toString());
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (context) {
             return PlatFormAlertDialogs(
