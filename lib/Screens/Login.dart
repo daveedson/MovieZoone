@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:moviezoone/Screens/RegistrationScreen.dart';
 import 'package:moviezoone/services/authFunctions.dart';
 import 'package:moviezoone/widgets/PlatformAlertDialogs.dart';
@@ -24,29 +25,47 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String get _password => _passwordController.text.toString();
 
+  bool _isLoadingState = false;
+
   //this method signs in with Google
   Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isLoadingState = true;
+    });
     final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
-
     try {
       await authFunctions.logInWithGoogle();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoadingState = false;
+      });
     }
   }
 
   //this method signs in with facebook
   Future<void> _signInWithFacebook() async {
+    setState(() {
+      _isLoadingState = true;
+    });
     final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
     try {
       await authFunctions.loginInWithFacebook();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoadingState = false;
+      });
     }
   }
 
   //this method signs in with email and password
   void _signInWithEmailAndPassword() async {
+    setState(() {
+      _isLoadingState = true;
+    });
     final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
     try {
       await authFunctions.signInWithEmailAndPassword(_email, _password);
@@ -65,6 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () => Navigator.pop(context),
             );
           });
+    } finally {
+      setState(() {
+        _isLoadingState = false;
+      });
     }
   }
 
@@ -73,191 +96,195 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Stack(
-          children: <Widget>[
-            Opacity(
-              opacity: 0.4,
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                          'images/mvp.png',
-                        ),
-                        fit: BoxFit.cover)),
-              ),
-            ),
-            Container(
-              // padding: EdgeInsets.symmetric(vertical: 153.0),
-              alignment: Alignment.center,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      'MovieZoone',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 42.0,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.2),
-                    ),
-                    SizedBox(
-                      height: 100.0,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      child: TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        controller: _emailController,
-                        validator: (email) {
-                          if (email.isEmpty) {
-                            return "You can't have an empty email !,";
-                          }
-                          if (email.length < 5) {
-                            return "Email must have nothing less than 5characters ";
-                          } else {
-                            return null;
-                          }
-                        },
-                        cursorColor: Colors.white12,
-                        decoration: InputDecoration(
-                            hintText: 'Email',
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 20.0),
-                            filled: true,
-                            fillColor: Color(0xff576F93),
-                            suffixIcon: Icon(
-                              Icons.email,
-                              size: 20.0,
-                              color: Colors.white,
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 1.0),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 1.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: Colors.white,
-                                  width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(color: Colors.white))),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      child: TextFormField(
-                        autocorrect: false,
-                        controller: _passwordController,
-                        obscureText: true,
-                        cursorColor: Colors.white12,
-                        validator: (password) {
-                          if (password.isEmpty) {
-                            return "You can't have and empty password !";
-                          }
-                          if (password.length < 6) {
-                            return "Password can't be less than 6";
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: InputDecoration(
-                            hintText: 'Password',
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 20.0),
-                            filled: true,
-                            fillColor: Color(0xff576F93),
-                            suffixIcon: Icon(
-                              Icons.lock,
-                              size: 20.0,
-                              color: Colors.white,
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 1.0),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 1.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(color: Colors.white))),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => RegistrationScreen(),
+      body: ModalProgressHUD(
+        color: Colors.blueGrey,
+        inAsyncCall: _isLoadingState,
+        child: Form(
+          key: _formKey,
+          child: Stack(
+            children: <Widget>[
+              Opacity(
+                opacity: 0.4,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(
+                            'images/mvp.png',
                           ),
-                        );
-                      },
-                      child: Text('Create a new account'),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Column(
-                      children: <Widget>[
-                        GoogleSignInButton(
-                          onPressed: _signInWithGoogle,
-                          darkMode: true,
-                        ),
-                        FacebookSignInButton(
-                          onPressed: _signInWithFacebook,
-                        )
-                      ],
-                    ),
-                  ],
+                          fit: BoxFit.cover)),
                 ),
               ),
-            ),
-            Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState.validate()) {
-                    _signInWithEmailAndPassword();
-                  }
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Theme.of(context).primaryColor,
-                  height: 60.0,
-                  child: Text(
-                    "LOGIN",
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+              Container(
+                // padding: EdgeInsets.symmetric(vertical: 153.0),
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'MovieZoone',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 42.0,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.2),
+                      ),
+                      SizedBox(
+                        height: 100.0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _emailController,
+                          validator: (email) {
+                            if (email.isEmpty) {
+                              return "You can't have an empty email !,";
+                            }
+                            if (email.length < 5) {
+                              return "Email must have nothing less than 5characters ";
+                            } else {
+                              return null;
+                            }
+                          },
+                          cursorColor: Colors.white12,
+                          decoration: InputDecoration(
+                              hintText: 'Email',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 15.0, horizontal: 20.0),
+                              filled: true,
+                              fillColor: Color(0xff576F93),
+                              suffixIcon: Icon(
+                                Icons.email,
+                                size: 20.0,
+                                color: Colors.white,
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 1.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 1.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                    style: BorderStyle.solid,
+                                    color: Colors.white,
+                                    width: 1.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(color: Colors.white))),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10.0),
+                        child: TextFormField(
+                          autocorrect: false,
+                          controller: _passwordController,
+                          obscureText: true,
+                          cursorColor: Colors.white12,
+                          validator: (password) {
+                            if (password.isEmpty) {
+                              return "You can't have and empty password !";
+                            }
+                            if (password.length < 6) {
+                              return "Password can't be less than 6";
+                            } else {
+                              return null;
+                            }
+                          },
+                          decoration: InputDecoration(
+                              hintText: 'Password',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 15.0, horizontal: 20.0),
+                              filled: true,
+                              fillColor: Color(0xff576F93),
+                              suffixIcon: Icon(
+                                Icons.lock,
+                                size: 20.0,
+                                color: Colors.white,
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 1.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 1.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide:
+                                    BorderSide(color: Colors.white, width: 1.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(color: Colors.white))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RegistrationScreen(),
+                            ),
+                          );
+                        },
+                        child: Text('Create a new account'),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Column(
+                        children: <Widget>[
+                          GoogleSignInButton(
+                            onPressed: _signInWithGoogle,
+                            darkMode: true,
+                          ),
+                          FacebookSignInButton(
+                            onPressed: _signInWithFacebook,
+                          )
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ],
+              Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState.validate()) {
+                      _signInWithEmailAndPassword();
+                    }
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: Theme.of(context).primaryColor,
+                    height: 60.0,
+                    child: Text(
+                      "LOGIN",
+                      style: TextStyle(color: Colors.white, fontSize: 18.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
