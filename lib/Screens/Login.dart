@@ -21,6 +21,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
   String get _email => _emailController.text.toString();
 
   String get _password => _passwordController.text.toString();
@@ -91,6 +94,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _emailEditComplete() {
+    FocusScope.of(context).requestFocus(_passwordFocusNode);
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -137,6 +144,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10.0),
                         child: TextFormField(
+                          onEditingComplete: _emailEditComplete,
+                          focusNode: _emailFocusNode,
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailController,
                           validator: (email) {
@@ -187,6 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10.0),
                         child: TextFormField(
+                          onEditingComplete: _signInWithEmailAndPassword,
+                          focusNode: _passwordFocusNode,
                           autocorrect: false,
                           controller: _passwordController,
                           obscureText: true,
