@@ -16,9 +16,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'MovieesZone',
         theme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColor: Color(0xFF576F93),
-        ),
+            brightness: Brightness.dark,
+            primaryColor: Color(0xFF576F93),
+            accentColor: Colors.redAccent[200]),
         home: LandingPage(),
       ),
     );
