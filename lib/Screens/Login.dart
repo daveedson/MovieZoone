@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:moviezoone/Blocs/Login_bloc.dart';
 import 'package:moviezoone/Screens/RegistrationScreen.dart';
 import 'package:moviezoone/services/authFunctions.dart';
 import 'package:moviezoone/widgets/PlatformAlertDialogs.dart';
@@ -13,6 +14,14 @@ import 'package:provider/provider.dart';
 import 'HomeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
+  static Widget create(BuildContext context) {
+    final auth = Provider.of<AuthFunctions>(context, listen: false);
+    return Provider<LoginBloc>(
+      create: (context) => LoginBloc(authFunctions: auth),
+      child: LoginScreen(),
+    );
+  }
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -35,9 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoadingState = true;
     });
-    final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
+    final bloc = Provider.of<LoginBloc>(context, listen: false);
     try {
-      await authFunctions.logInWithGoogle();
+      await bloc.logInWithGoogle();
     } catch (e) {
       print(e.toString());
     } finally {
@@ -52,9 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoadingState = true;
     });
-    final authFunctions = Provider.of<AuthFunctions>(context, listen: false);
+    final bloc = Provider.of<LoginBloc>(context, listen: false);
     try {
-      await authFunctions.loginInWithFacebook();
+      await bloc.loginInWithFacebook();
     } catch (e) {
       print(e.toString());
     } finally {
@@ -160,36 +169,38 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           cursorColor: Colors.white12,
                           decoration: InputDecoration(
-                              hintText: 'Email',
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 15.0, horizontal: 20.0),
-                              filled: true,
-                              fillColor: Color(0xff576F93),
-                              suffixIcon: Icon(
-                                Icons.email,
-                                size: 20.0,
-                                color: Colors.white,
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                    color: Colors.redAccent, width: 1.0),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                    color: Colors.redAccent, width: 1.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                    style: BorderStyle.solid,
-                                    color: Colors.white,
-                                    width: 1.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.white))),
+                            hintText: 'Email',
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 20.0),
+                            filled: true,
+                            fillColor: Color(0xff576F93),
+                            suffixIcon: Icon(
+                              Icons.email,
+                              size: 20.0,
+                              color: Colors.white,
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                  color: Colors.redAccent, width: 1.0),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                  color: Colors.redAccent, width: 1.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                  style: BorderStyle.solid,
+                                  color: Colors.white,
+                                  width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                          ),
                         ),
                       ),
                       Padding(
