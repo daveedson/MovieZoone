@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'Screens/Login.dart';
+import 'package:moviezoone/services/auth.dart';
+import 'package:moviezoone/services/authFunctions.dart';
+import 'package:moviezoone/widgets/LandingPage.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,16 +11,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MovieesZone',
-      theme: ThemeData(
-        
-        brightness: Brightness.dark,
-        primaryColor: Color(0xFF576F93),
-      
+    return Provider<AuthFunctions>(
+      create: (context) => Auth(),
+      child: MaterialApp(
+        title: 'MovieesZone',
+        theme: ThemeData(
+            brightness: Brightness.dark,
+            primaryColor: Color(0xFF576F93),
+            accentColor: Colors.redAccent[200]),
+        home: LandingPage(),
       ),
-      home: LoginScreen(),
-      
-       );
+    );
   }
 }

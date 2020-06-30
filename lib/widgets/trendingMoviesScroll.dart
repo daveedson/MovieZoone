@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:moviezoone/data/data.dart';
 import 'package:moviezoone/models/recentmovies.dart';
 
 class RecentMoviesScrollView extends StatelessWidget {
